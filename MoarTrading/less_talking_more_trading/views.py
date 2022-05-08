@@ -11,8 +11,44 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .forms import (form_example, order_form_basic)
-from MoarTrading.order_generator import order_basic
+from .forms import (form_example, order_form_basic,sell_form_basic)
+from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
+from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
+
+class basic_sell_view(FormView):
+
+    template_name='basic_sell.html'
+
+    form_class=sell_form_basic
+
+    success_url='/home'
+
+
+    def form_valid(self, form):
+        
+        username_query=self.request.user.username #get id of logged in user 
+
+        logged_in_user =  User.objects.get(username=username_query) #get user object
+
+        tda_id = logged_in_user.profile.tdameritrade_id #get user ameritrade id
+       
+        company_symbol=form.cleaned_data['sell_company_symbol']
+        stock_quantity=form.cleaned_data['sell_quantity']
+        price_limit=form.cleaned_data['sell_price_limit']
+        timing=form.cleaned_data['timing']
+        session=form.cleaned_data['session']
+
+        sell_basic(company_symbol, stock_quantity, price_limit, timing, session, tda_id)
+
+        # same for all other fields, can also do form.save() if model form
+
+
+       
+
+        return super().form_valid(form)
+
+
+
 
 class home_view(View):
     def get(self,request, *args, **kwargs):

@@ -3,6 +3,19 @@ from django import forms
 from crispy_forms.helper import FormHelper
 Exaxmple_Choices=[('question', 'Question'), ('other','Other')]
 
+
+class sell_form_basic(forms.Form):
+    
+    timing=[('Day', 'day'), ('Good Till Cancel','good till cancel'), ('Fill or Kill','fill or kill')]
+    session=[('Seamless', 'seamless'), ('AM','am'), ('PM','pm'), ('Normal','normal')]
+
+    sell_company_symbol= forms.CharField()
+    sell_quantity= forms.IntegerField()
+    sell_price_limit= forms.DecimalField()
+    timing = forms.ChoiceField(choices=timing)
+    session = forms.ChoiceField(choices=session)
+    
+
 class order_form_basic(forms.Form):
     timing=[('Day', 'day'), ('Good Till Cancel','good till cancel'), ('Fill or Kill','fill or kill')]
     session=[('Seamless', 'seamless'), ('AM','am'), ('PM','pm'), ('Normal','normal')]
