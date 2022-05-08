@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth.decorators import login_required    
 from less_talking_more_trading.views import home_view
-from less_talking_more_trading.views import (form_example_view, basic_order_view, basic_sell_view)                                 
+from less_talking_more_trading.views import (form_example_view, basic_order_view, basic_sell_view, Quote_query_view, Quote_view)                                 
 
 
 urlpatterns = [
@@ -26,5 +26,7 @@ urlpatterns = [
     path('home/', home_view.as_view(), name='home'),
     path('', home_view.as_view(), name='home_empty'),
     path('sell_basic/', login_required(basic_sell_view.as_view()), name='sell_basic'),
+    path('quote_query/', login_required(Quote_query_view.as_view()), name='quote_query'),
+    path('stock_quote/',  login_required(Quote_view.as_view()), name='stock_quote'),
     path('', include('site_users.urls')),
 ]

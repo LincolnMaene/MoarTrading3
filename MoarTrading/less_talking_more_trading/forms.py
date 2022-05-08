@@ -4,6 +4,10 @@ from crispy_forms.helper import FormHelper
 Exaxmple_Choices=[('question', 'Question'), ('other','Other')]
 
 
+class Quote_Query_Form(forms.Form):
+    symbol=forms.CharField(label="Company Symbol")
+    
+
 class sell_form_basic(forms.Form):
     
     timing=[('Day', 'day'), ('Good Till Cancel','good till cancel'), ('Fill or Kill','fill or kill')]
