@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth.decorators import login_required    
+from less_talking_more_trading.views import home_view
 from less_talking_more_trading.views import form_example_view, basic_order_view                                 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('basic_order/', login_required(basic_order_view.as_view()), name='basic_order'),
+    path('home/', home_view.as_view(), name='home'),
     path('', include('site_users.urls')),
 ]

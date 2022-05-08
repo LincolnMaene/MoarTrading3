@@ -14,6 +14,11 @@ from django.contrib.auth.models import User
 from .forms import (form_example, order_form_basic)
 from MoarTrading.order_generator import order_basic
 
+class home_view(View):
+    def get(self,request, *args, **kwargs):
+        return render(request, 'home.html', {})
+
+
 # Create your views here.
 class basic_order_view(FormView):
 
