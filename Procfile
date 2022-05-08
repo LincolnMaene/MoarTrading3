@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath MoarTrading.wsgi --log-file -
+web: gunicorn --pythonpath MoarTrading MoarTrading.wsgi
