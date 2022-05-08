@@ -4,6 +4,22 @@ from crispy_forms.helper import FormHelper
 Exaxmple_Choices=[('question', 'Question'), ('other','Other')]
 
 
+class options_form(forms.Form):
+   
+    underlying_symbol= forms.CharField()
+    quantity=forms.IntegerField()
+    
+class options_query_form(forms.Form):
+    put_or_call=[('PUT', 'p'), ('Call','c')]
+    underlying_symbol= forms.CharField()
+    start_date = forms.DateTimeField()
+    strike_number=forms.IntegerField()
+    end_date = forms.DateTimeField()
+    contract_type = forms.ChoiceField(choices=put_or_call)
+
+
+
+
 class Quote_Query_Form(forms.Form):
     symbol=forms.CharField(label="Company Symbol")
     

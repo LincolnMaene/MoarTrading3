@@ -11,11 +11,13 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form)
+from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form, options_form, options_query_form)
 from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
 from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
 from MoarTrading.quote_generator import generate_quote
 from MoarTrading.market_hours_generator import single_market_hours
+from MoarTrading.option_chains_generator import generate_options_calls_date, generate_options_put_date
+
 
 
 # #example for how to access user profile in function based view
@@ -42,6 +44,157 @@ hours_query_object=single_market_hours('EQUITY',trial_end_date)#this will hold q
 movers_query_obj=NONE
 stock_quote_obj=NONE
 #setup for options query object ends here
+
+
+class options_data_view (APIView): #this allows us to see  option data
+
+    authentication_classes=[]
+    permission_classes=[]
+
+    
+
+    def get(self,request, format=None):
+
+        data_view=1
+
+        global options_query_object #the plan is to take string returned by function them extract symbols
+
+        data1=""
+        data2=""
+        data3=""
+        data4=""
+
+        options_query_object=options_query_object.split(",")
+
+        for item in options_query_object:
+
+            if item.find("symbol")!=-1:
+               data1=data1+item
+
+        data1=data1.split(":")
+        disallowed_substr1="{\""
+        disallowed_substr2="\""
+        disallowed_substr3="symbol"
+
+        for item in data1:
+            item=item.replace(disallowed_substr1, "")
+            item=item.replace(disallowed_substr2, ",")
+            item=item.replace(disallowed_substr3, "")
+            
+            data2=data2+item
+        
+        data2=data2.split(",")
+        index=0
+        for item in data2:
+
+            if(item!="" and item!=''):
+                data3=data3+item
+                
+
+            index=index+1
+
+        data3=data3.split(" ")
+
+        
+        for item in data3:
+            if not item:
+               item="x"
+            else:
+                data4=data4+item+","
+        
+        data4=data4.split(",")
+            
+
+
+                
+            
+            
+            
+           
+        
+        #print(data4)
+        return render(request, 'options_symbols.html', {'data': data4, 'data_view': data_view})
+
+
+class options_view(FormView):
+
+    template_name='options_order.html'
+
+    form_class=options_form
+
+    success_url='/home'
+
+
+    def form_valid(self, form):
+
+        username_query=self.request.user.username #get id of logged in user 
+
+        logged_in_user =  User.objects.get(username=username_query) #get user object
+
+        tda_id = logged_in_user.profile.tdameritrade_id #get user ameritrade id
+        
+        underlying_symbol=form.cleaned_data['underlying_symbol']
+        quantity=form.cleaned_data['quantity']
+        
+        #print(underlying_symbol, expiration_date, contract_type, strike_price_as_string)
+
+        options_order_single(underlying_symbol,quantity, tda_id)
+
+
+
+        # same for all other fields, can also do form.save() if model form
+
+
+
+
+
+        
+
+        return super().form_valid(form)
+
+class options_query_view(FormView): #this view is repsonsible for giving us a query of options data
+
+    template_name='options_query.html'
+
+    form_class=options_query_form
+
+    success_url='/options_data'
+
+
+    def form_valid(self, form):
+        
+        global options_query_object#without global, python will just create a local variable
+
+        underlying_symbol=form.cleaned_data['underlying_symbol']
+        end_date=form.cleaned_data['end_date']
+        start_date=form.cleaned_data['start_date']
+        strike_number=form.cleaned_data['strike_number']
+        contract_type=form.cleaned_data['contract_type']
+
+        #print(underlying_symbol, expiration_date, contract_type, strike_price_as_string)
+
+        # start_date=datetime.datetime.strptime('2022-2-22', '%Y-%m-%d').date()
+        # end_date=datetime.datetime.strptime('2023-12-31', '%Y-%m-%d').date()
+
+
+
+        # same for all other fields, can also do form.save() if model form
+
+        if(contract_type=='Call'):
+            options_query_object=generate_options_calls_date(underlying_symbol, strike_number , start_date, end_date)
+        else:
+            options_query_object=generate_options_put_date(underlying_symbol, strike_number , start_date, end_date)
+
+        #print(options_query_object)
+
+
+
+
+        
+
+        return super().form_valid(form)
+
+
 
 
 class Quote_view(TemplateView):##this displayds the price history
