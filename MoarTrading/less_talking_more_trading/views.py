@@ -11,12 +11,14 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form, options_form, options_query_form)
+from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form, options_form, options_query_form,
+Movers_Query_Form)
 from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
 from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
 from MoarTrading.quote_generator import generate_quote
 from MoarTrading.market_hours_generator import single_market_hours
 from MoarTrading.option_chains_generator import generate_options_calls_date, generate_options_put_date
+from MoarTrading.movers_generator import get_movers
 
 
 
@@ -44,6 +46,131 @@ hours_query_object=single_market_hours('EQUITY',trial_end_date)#this will hold q
 movers_query_obj=NONE
 stock_quote_obj=NONE
 #setup for options query object ends here
+
+
+class Movers_data_view (APIView): #this should give the user the top ten movers for that day and so on and so forth
+
+    authentication_classes=[]
+    permission_classes=[]
+
+    list_of_lists=[[]] * 10
+
+    list_of_descriptions=[[]] * 10
+
+    list_of_symbols=[[]] * 10
+
+    
+
+    
+
+   
+
+    def get(self,request, format=None):
+        nothing_found=1
+
+        print("!!!!!type of movers query object is:", type(movers_query_obj))
+
+        print("!!!!!size of movers query object is:", len(movers_query_obj))
+
+        size=10
+
+        if(len(movers_query_obj)>0):
+
+            nothing_found=0
+
+            print("size greater than zero")
+
+            for x in range(0, size):
+
+                Movers_data_view.list_of_lists[x]=list(movers_query_obj[x].items())
+
+            for x in range(0, size):
+
+                Movers_data_view.list_of_descriptions[x]=list(Movers_data_view.list_of_lists[x][1])
+
+            for x in range(0, size):
+
+                Movers_data_view.list_of_symbols[x]=list(Movers_data_view.list_of_lists[x][4])
+
+            for x in range(0, size):
+
+                Movers_data_view.list_of_symbols[x]=str(Movers_data_view.list_of_symbols[x])
+                Movers_data_view.list_of_descriptions[x]=str(Movers_data_view.list_of_descriptions[x])
+        
+        
+            #by the time we reach here, i have converted the symbols and company names into usable strings for html
+
+            #print(Movers_data_view.list_of_symbols)
+            # for x in jsonObject:#     print(x)
+
+            disallowed_substr="['description', '"
+            disallowed_substr2="']"
+            disallowed_substr3="['symbol', '"
+            
+            for x in range(0, size):
+
+                Movers_data_view.list_of_symbols[x]=Movers_data_view.list_of_symbols[x].replace(disallowed_substr3, "")
+                Movers_data_view.list_of_symbols[x]=Movers_data_view.list_of_symbols[x].replace(disallowed_substr2, "")
+                Movers_data_view.list_of_descriptions[x]=Movers_data_view.list_of_descriptions[x].replace(disallowed_substr, "")
+                Movers_data_view.list_of_descriptions[x]=Movers_data_view.list_of_descriptions[x].replace(disallowed_substr2, "")
+
+            range_html=[0,1,2,3,4,5]
+
+            compact_list=zip(Movers_data_view.list_of_descriptions, Movers_data_view.list_of_symbols)
+
+
+
+
+            return render(request, 'movers_display.html', 
+                {'description': compact_list })
+
+        else:
+
+            return render(request, 'movers_display.html', 
+                {'nothing': nothing_found})
+
+
+          
+
+class Movers_Query_view(FormView):
+
+    
+
+    template_name='movers_query.html'
+
+    form_class=Movers_Query_Form
+
+    success_url='/movers_data'
+
+
+    def form_valid(self, form):
+
+        global movers_query_obj
+
+        global hours_query_object #without this python just creates a local var
+        
+
+        index=form.cleaned_data['index']
+        direction=form.cleaned_data['direction']#GET compay 1 daTA
+        change=form.cleaned_data['change']
+       
+       
+       
+
+        movers_query_obj=get_movers(index,direction,change)
+
+        #print("type of query obj: ",type(movers_query_obj))
+
+    
+
+
+
+
+
+        
+
+        return super().form_valid(form)
+
 
 
 class options_data_view (APIView): #this allows us to see  option data

@@ -18,13 +18,15 @@ from django.urls import include, path
 from django.contrib.auth.decorators import login_required    
 from less_talking_more_trading.views import home_view
 from less_talking_more_trading.views import (form_example_view, basic_order_view, basic_sell_view, Quote_query_view, Quote_view,options_view,
-options_query_view, options_data_view)                                 
+options_query_view, options_data_view, Movers_Query_view, Movers_data_view)                                 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('options_order/', login_required(options_view.as_view()), name='options_order'),
     path('options_query/', login_required(options_query_view.as_view()), name='options_query'),
+    path('movers_query/',  login_required(Movers_Query_view.as_view()), name='movers_query'),
+    path('movers_data/', login_required(Movers_data_view.as_view()), name='movers_data'),
     path('options_data/', login_required(options_data_view.as_view()), name='options_data'),
     path('basic_order/', login_required(basic_order_view.as_view()), name='basic_order'),
     path('home/', home_view.as_view(), name='home'),
