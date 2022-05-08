@@ -1,0 +1,1 @@
+web: gunicorn MoarTrading.wsgi --log-file -
