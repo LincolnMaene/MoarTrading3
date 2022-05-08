@@ -1,0 +1,2 @@
+my_env\Scripts\activate
+my_env\Scripts\deactivate

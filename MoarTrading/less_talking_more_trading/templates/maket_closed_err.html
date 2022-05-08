@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+        {% block base_head %}
+
+        {% endblock %}
+
+        {% block base_title %}<title>Market Hours Error</title>{% endblock %} 
+        
+    </head>
+
+    <body>
+        {% block base_body %}
+
+        <div class="alert alert-warning alert-dismissible">
+            <a href="/home" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Market will be closed!!</strong>
+        </div>
+       
+      
+       
+        
+        {% endblock %}
+    </body>
+</html>

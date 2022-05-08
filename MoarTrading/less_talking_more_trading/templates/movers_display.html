@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+        {% block base_head %}
+        
+        <h3>Top Movers today:</h3>
+        {% endblock %}
+
+        {% block base_title %}<title>Top Movers</title>{% endblock %} 
+        
+    </head>
+
+    <body>
+     
+        {% block base_body %}
+
+        {% if nothing %}
+        
+        <h3> No Movers found today </h3>
+
+        {% else %}
+
+      
+        {% for name, symbol in description %}
+            <h3> {{ name }} ( {{ symbol }}) </h3>
+        {% endfor %}
+        
+        {% endif %}
+                  
+
+        
+        {% endblock %}
+    </body>
+</html>

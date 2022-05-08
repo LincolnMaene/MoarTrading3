@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+        {% block base_head %}
+        
+        <h3>Expected Market Hours:</h3>
+        {% endblock %}
+
+        {% block base_title %}<title>Basic Order</title>{% endblock %} 
+        
+    </head>
+
+    <body>
+     
+        {% block base_body %}
+
+
+        {% for item in data %}
+            <h3> {{item}}</h3>
+        {% endfor %}
+       
+      
+                  
+
+        
+        {% endblock %}
+    </body>
+</html>

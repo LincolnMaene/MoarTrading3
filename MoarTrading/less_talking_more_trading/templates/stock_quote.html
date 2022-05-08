@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+        {% block base_head %}
+        
+        <h3>Stock Quote:</h3>
+        {% endblock %}
+
+        {% block base_title %}<title>Stock Quote</title>{% endblock %} 
+        
+    </head>
+
+    <body>
+     
+        {% block base_body %}
+        
+
+        <h3>Bid Price : {{ quote_data.0 }}</h3>
+        <h3>Ask Price : {{ quote_data.1 }}</h3>
+        <h3>Open Price : {{ quote_data.2 }}</h3>
+        <h3>High Price : {{ quote_data.3 }}</h3>
+        <h3>Low Price : {{ quote_data.4 }}</h3>
+        <h3>Close Price : {{ quote_data.5 }}</h3>
+        
+
+
+     
+                  
+
+        
+        {% endblock %}
+    </body>
+</html>

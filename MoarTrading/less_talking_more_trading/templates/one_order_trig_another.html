@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+{% load static %}
+
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+        {% block base_head %}
+
+        {% endblock %}
+
+        {% block base_title %}<title>Basic Order</title>{% endblock %} 
+        
+    </head>
+    {% block base_body %}
+    <body id="bg3" style="background-image: url('{% static "less_talking_more_trading/images/8.jpg"%}')";>
+        
+       
+        <form action="." method="post" class="contact-form" style="margin: auto; width: 220px;">
+            
+            {% csrf_token %}
+            
+            {{ form | crispy }}
+
+            <button type="submit">Buy Both</button>
+
+
+        </form>
+          
+        
+       
+    </body>
+    {% endblock %}
+</html>

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+
+{% block base_body %}
+
+{% for i in data %}
+    <h3>{{i}}</h3>
+{% endfor %}
+<h3><a href="{% url 'options_order' %}">Buy Options </a></h3>
+{% endblock base_body %}

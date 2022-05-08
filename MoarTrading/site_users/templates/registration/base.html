@@ -1,0 +1,89 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'less_talking_more_trading/style.css' %}" />
+
+
+<!DOCTYPE html>
+   <!-- this should add bootstrap, jquery -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+   <!-- jQuery library -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
+   <!-- Latest compiled JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+ 
+    <!-- Latest compiled and minified chart.js -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+   
+
+  
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Moartrading</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/home">Home</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="/logout">Logout</a></li>
+          <li><a href="/profile_update">Update Profile</a></li>
+          <li><a href="/basic_order">Buy Stocks</a></li>
+          <li><a href="/sell_basic">Sell Stocks</a></li>
+          <li><a href="/quote_query">Stock Quotes</a></li>
+          <li><a href="/options_query">Search Options Symbols</a></li>
+          <li><a href="/options_order">Buy Options</a></li>
+          <li><a href="/movers_query">See Movers</a></li>
+          <li><a href="/watchlist_query">Create Stock Watchlist</a></li>
+          <li><a href="/market_hours_query">Market Hours</a></li>
+          <li><a href="/sale_trigger_sale">Complex Stock Sales</a></li>
+          <li><a href="/order_trigger_order">Complex Stock Purchase</a></li>
+          <li><a href="/price_query">Price History</a></li>
+      
+          {% else %}
+      
+          <li><a href="/sign_up">Account Creation</a></li>
+          <li><a href="/login">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+     <style>
+      h3 {text-align: center;}
+      h1 {text-align: center;}
+      h2 {text-align: center;}
+      p {text-align: center;}
+      div {text-align: center;}
+      </style>
+        {% block base_head %}
+
+       
+  
+
+        {% endblock %}
+
+        {% block base_title %}<title>Default Title</title>{% endblock %} 
+        
+    </head>
+    {% block base_body %}
+    <body>
+
+    
+
+        {% block scripts %}  {% endblock scripts %}
+
+       
+        
+     
+
+
+     
+
+    </body>
+    {% endblock base_body %}
+</html>

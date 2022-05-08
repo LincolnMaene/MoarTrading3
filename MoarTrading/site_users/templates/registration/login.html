@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+
+<html>
+    <head> 
+ 
+     <!-- having these blocks allow overredide in child pages -->
+        {% block base_head %}
+
+        {% endblock %}
+
+        {% block base_title %}<title>Login Page</title>{% endblock %} 
+        
+    </head>
+
+    
+    {% block base_body %}
+        <body>
+       
+        <form action="{% url 'login' %}" method="post" class="contact-form" style="margin: auto; width: 220px;">
+            
+            {% csrf_token %}
+            
+            {{ form | crispy }}
+
+            <button type="submit">Log in</button>
+
+
+        </form>
+          
+        {{ message }}
+        </body>
+        
+        {% endblock %}
+   
+</html>
