@@ -15,9 +15,34 @@ from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_
 from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
 from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
 from MoarTrading.quote_generator import generate_quote
+from MoarTrading.market_hours_generator import single_market_hours
 
 
+# #example for how to access user profile in function based view
+    # u = User.objects.get(username=request.user.username)
+    # tda_id = u.profile.tdameritrade_id
+
+
+   
+
+    # print(acct_id)
+
+    #for class based views use: self.request.user.username
+
+
+
+#these lines essentiall fill the options_query object with junk data so function knows what type it is
+trial_start_date=datetime.datetime.strptime('2022-2-22', '%Y-%m-%d').date()
+trial_end_date=datetime.datetime.strptime('2022-2-22', '%Y-%m-%d').date()
 price_history_str=""
+
+
+options_query_object=NONE #this will hold query data for option chains
+hours_query_object=single_market_hours('EQUITY',trial_end_date)#this will hold query data for market hours chains
+movers_query_obj=NONE
+stock_quote_obj=NONE
+#setup for options query object ends here
+
 
 class Quote_view(TemplateView):##this displayds the price history
 
