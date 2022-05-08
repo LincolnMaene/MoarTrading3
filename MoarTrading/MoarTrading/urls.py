@@ -18,7 +18,7 @@ from django.urls import include, path
 from django.contrib.auth.decorators import login_required    
 from less_talking_more_trading.views import home_view
 from less_talking_more_trading.views import (form_example_view, basic_order_view, basic_sell_view, Quote_query_view, Quote_view,options_view,
-options_query_view, options_data_view, Movers_Query_view, Movers_data_view)                                 
+options_query_view, options_data_view, Movers_Query_view, Movers_data_view, Watchlist_query_view)                                 
 
 
 urlpatterns = [
@@ -34,5 +34,6 @@ urlpatterns = [
     path('sell_basic/', login_required(basic_sell_view.as_view()), name='sell_basic'),
     path('quote_query/', login_required(Quote_query_view.as_view()), name='quote_query'),
     path('stock_quote/',  login_required(Quote_view.as_view()), name='stock_quote'),
+    path('watchlist_query/',  login_required(Watchlist_query_view.as_view()), name='watchlist_query'),
     path('', include('site_users.urls')),
 ]

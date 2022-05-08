@@ -12,13 +12,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form, options_form, options_query_form,
-Movers_Query_Form)
+Movers_Query_Form, Watchlist_query_form)
 from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
 from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
 from MoarTrading.quote_generator import generate_quote
 from MoarTrading.market_hours_generator import single_market_hours
 from MoarTrading.option_chains_generator import generate_options_calls_date, generate_options_put_date
 from MoarTrading.movers_generator import get_movers
+from MoarTrading.watchlist_generator import create_watchlist_spec_equity, generate_watchlist
+
 
 
 
@@ -41,11 +43,56 @@ trial_end_date=datetime.datetime.strptime('2022-2-22', '%Y-%m-%d').date()
 price_history_str=""
 
 
-options_query_object=NONE #this will hold query data for option chains
+options_query_object=list() #this will hold query data for option chains
 hours_query_object=single_market_hours('EQUITY',trial_end_date)#this will hold query data for market hours chains
 movers_query_obj=NONE
 stock_quote_obj=NONE
 #setup for options query object ends here
+
+class Watchlist_query_view(FormView):
+
+    template_name='watchlist_query.html'
+
+    form_class=Watchlist_query_form
+
+    success_url='/home'
+
+
+    def form_valid(self, form):
+
+        username_query=self.request.user.username #get id of logged in user 
+
+        logged_in_user =  User.objects.get(username=username_query) #get user object
+
+        tda_id = logged_in_user.profile.tdameritrade_id #get user ameritrade id
+        
+        symbol=form.cleaned_data['symbol']
+        name=form.cleaned_data['name']
+        date=form.cleaned_data['date']
+        quantity=form.cleaned_data['quantity']
+        price_avg=form.cleaned_data['price_avg']
+        commission=form.cleaned_data['commission']
+
+        real_date=datetime.datetime.strptime(date, '%Y-%m-%d').date()
+
+      
+      
+      
+        spec=create_watchlist_spec_equity(name,quantity,price_avg,commission,symbol,date)
+
+        # print(spec)
+
+        # print(tda_id)
+
+        print(generate_watchlist(tda_id,spec))
+
+
+
+
+
+        
+
+        return super().form_valid(form)
 
 
 class Movers_data_view (APIView): #this should give the user the top ten movers for that day and so on and so forth
