@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form, options_form, options_query_form,
-Movers_Query_Form, Watchlist_query_form, Market_Query_Form)
+Movers_Query_Form, Watchlist_query_form, Market_Query_Form, sale_trigger_form)
 from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
 from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
 from MoarTrading.quote_generator import generate_quote
@@ -50,6 +50,54 @@ hours_query_object=single_market_hours('EQUITY',trial_end_date)#this will hold q
 movers_query_obj=NONE
 stock_quote_obj=NONE
 #setup for options query object ends here
+
+class sale_trigger_sale_view(FormView):
+
+    template_name='one_sale_triggers_another.html'
+
+    form_class=sale_trigger_form
+
+    success_url='/home'
+
+
+    def form_valid(self, form):
+
+        username_query=self.request.user.username #get id of logged in user 
+
+        logged_in_user =  User.objects.get(username=username_query) #get user object
+
+        tda_id = logged_in_user.profile.tdameritrade_id #get user ameritrade id
+
+        
+
+
+        company_1_symbol=form.cleaned_data['company_1_symbol']#GET compay 1 daTA
+        stock_1_quantity=form.cleaned_data['stock_1_quantity']
+        price_1_limit=form.cleaned_data['price_1_limit']
+
+        company_2_symbol=form.cleaned_data['company_2_symbol']#GET compay 2 daTA
+        stock_2_quantity=form.cleaned_data['stock_2_quantity']
+        price_2_limit=form.cleaned_data['price_2_limit']
+        timing=form.cleaned_data['timing'] #useless better to replace with choice between trigger cancel and trigger order
+        session=form.cleaned_data['session']  #useless better to replace with choice between trigger cancel and trigger order
+
+        order_1=generate_sell_equity_order(company_1_symbol, stock_1_quantity, price_1_limit)
+        order_2=generate_sell_equity_order(company_2_symbol, stock_2_quantity, price_2_limit)
+
+        sale_order_triggers_another(tda_id, order_1, order_2)
+
+        #print(company_1_symbol,stock_1_quantity, price_1_limit, company_2_symbol,stock_2_quantity, price_2_limit)
+
+    
+
+
+
+
+
+        
+
+        return super().form_valid(form)
+
 
 class Market_Query_view(FormView):
 

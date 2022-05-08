@@ -23,6 +23,7 @@ options_query_view, options_data_view, Movers_Query_view, Movers_data_view, Watc
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('sale_trigger_sale/',  login_required(sale_trigger_sale_view.as_view()), name='sale_trigger_sale'),
     path('options_order/', login_required(options_view.as_view()), name='options_order'),
     path('options_query/', login_required(options_query_view.as_view()), name='options_query'),
     path('movers_query/',  login_required(Movers_Query_view.as_view()), name='movers_query'),
