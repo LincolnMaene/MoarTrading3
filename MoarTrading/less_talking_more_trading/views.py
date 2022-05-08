@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .forms import (form_example, order_form_basic,sell_form_basic, Quote_Query_Form, options_form, options_query_form,
-Movers_Query_Form, Watchlist_query_form)
+Movers_Query_Form, Watchlist_query_form, Market_Query_Form)
 from MoarTrading.order_generator import order_basic, one_order_triggers_another, options_order_single, generate_buy_equity_order
 from MoarTrading.sell_generator import sell_basic, generate_sell_equity_order,sale_order_triggers_another
 from MoarTrading.quote_generator import generate_quote
@@ -20,6 +20,8 @@ from MoarTrading.market_hours_generator import single_market_hours
 from MoarTrading.option_chains_generator import generate_options_calls_date, generate_options_put_date
 from MoarTrading.movers_generator import get_movers
 from MoarTrading.watchlist_generator import create_watchlist_spec_equity, generate_watchlist
+from MoarTrading.market_hours_generator import single_market_hours
+
 
 
 
@@ -48,6 +50,132 @@ hours_query_object=single_market_hours('EQUITY',trial_end_date)#this will hold q
 movers_query_obj=NONE
 stock_quote_obj=NONE
 #setup for options query object ends here
+
+class Market_Query_view(FormView):
+
+    
+
+    template_name='market_hours_query.html'
+
+    form_class=Market_Query_Form
+
+    success_url='/market_hours'
+
+
+    def form_valid(self, form):
+
+        global hours_query_object #without this python just creates a local var
+        
+
+        Market=form.cleaned_data['Market']
+        Year=form.cleaned_data['Year']#GET compay 1 daTA
+        Month=form.cleaned_data['Month']
+        Day=form.cleaned_data['Day']#GET compay 1 daTA
+        Hour=form.cleaned_data['Hour']
+        Minutes=form.cleaned_data['Minutes']#GET compay 1 daTA
+       
+        
+        date_maker = datetime.datetime(Year, Month, Day, Hour, Minutes)
+
+        hours_query_object=single_market_hours(Market, date_maker)
+
+        #print(hours_query_object)
+
+        
+
+    
+
+
+
+
+
+        
+
+        return super().form_valid(form)
+
+
+class Market_hours_view (APIView):#!!!! CHECK FORMAT FOR FOREX, BONDS ETC...!!!!
+
+    authentication_classes=[]
+    permission_classes=[]
+
+    def get(self,request, format=None):
+
+        global hours_query_object
+        is_open=False#tells us if the market is open
+        
+
+
+        #print(options_query_object)
+
+        # data={
+
+        #     "sales":177,
+        #     "customers":120,
+        # }
+
+      
+
+        hours_query_object=hours_query_object.split(",")
+        
+
+       
+       
+        index=0
+        hrs_str=""
+        for x in hours_query_object:
+            if "start" in x or "end" in x:
+                is_open=True
+                hrs_str=hrs_str+x+","
+
+        hrs_str=hrs_str.split("{")
+
+        hrs_str_two=""
+
+        for x in hrs_str:
+
+            if "start" in x or "end" in x:
+                
+                hrs_str_two=hrs_str_two+x+","
+                #print(hrs_str_two)
+        
+        hrs_str_two=hrs_str_two.split(",")
+
+        hrs_str_3=""
+        for x in hrs_str_two:
+           if "start" in x or "end" in x:
+                
+                hrs_str_3=hrs_str_3+x+","
+                #print(hrs_str_two)
+        forbid_string1="\""
+        forbid_string2="{"
+        forbid_string3="}"
+        forbid_string4="["
+        forbid_string5="]"
+
+        hrs_str_3=hrs_str_3.replace(forbid_string1,'')
+        hrs_str_3=hrs_str_3.replace(forbid_string2,'')
+        hrs_str_3=hrs_str_3.replace(forbid_string3,'')
+        hrs_str_3=hrs_str_3.replace(forbid_string4,'')
+        hrs_str_3=hrs_str_3.replace(forbid_string5,'')
+
+        hrs_str_3=hrs_str_3.split(',')
+           
+
+
+        print(hrs_str_3)
+           
+       
+
+        if is_open==True: #if market is open
+            
+            data=hrs_str_3
+            
+            return render(request, 'market_hrs.html', {'data': data})
+        
+        return render(request, 'maket_closed_err.html')
+
+
 
 class Watchlist_query_view(FormView):
 

@@ -3,6 +3,18 @@ from django import forms
 from crispy_forms.helper import FormHelper
 Exaxmple_Choices=[('question', 'Question'), ('other','Other')]
 
+class Market_Query_Form(forms.Form):
+
+    market_choice=[('EQUITY', 'EQUITY'), ('OPTION','OPTION'), ('FUTURE','FUTURE'), 
+                    ('BOND', 'BOND'), ('FOREX','FOREX')]
+    Market= forms.ChoiceField(choices=market_choice)
+    Year = forms.IntegerField(label="Year")
+    Month= forms.IntegerField(label="Month")
+    Day=forms.IntegerField(label="Day")
+    Hour=forms.IntegerField(label="Hour")
+    Minutes=forms.IntegerField(label="Minutes")
+    
+
 class Watchlist_query_form(forms.Form):
  
     name= forms.CharField()
