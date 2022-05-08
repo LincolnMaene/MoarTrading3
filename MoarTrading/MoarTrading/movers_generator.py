@@ -1,4 +1,3 @@
-from turtle import up
 from  .sign_up import client_local
 import json
 
