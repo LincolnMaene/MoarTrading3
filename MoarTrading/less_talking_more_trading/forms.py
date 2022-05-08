@@ -4,6 +4,9 @@ from crispy_forms.helper import FormHelper
 Exaxmple_Choices=[('question', 'Question'), ('other','Other')]
 
 
+class Price_Query_Form(forms.Form):
+    symbol=forms.CharField(label="Company Symbol")
+    
 
 class order_trigger_form(forms.Form):
 
